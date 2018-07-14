@@ -13,17 +13,17 @@ defimpl Scrivener.Paginater, for: Ecto.Query do
         caller: caller,
         options: options
       }) do
-    total_entries =
-      Keyword.get_lazy(options, :total_entries, fn -> total_entries(query, repo, caller) end)
+    total_count =
+      Keyword.get_lazy(options, :total_count, fn -> total_count(query, repo, caller) end)
 
-    total_pages = total_pages(total_entries, page_size)
+    total_pages = total_pages(total_count, page_size)
     page_number = min(total_pages, page_number)
 
     %Page{
       page_size: page_size,
       page_number: page_number,
       entries: entries(query, repo, page_number, page_size, caller),
-      total_entries: total_entries,
+      total_count: total_count,
       total_pages: total_pages
     }
   end
@@ -37,8 +37,8 @@ defimpl Scrivener.Paginater, for: Ecto.Query do
     |> repo.all(caller: caller)
   end
 
-  defp total_entries(query, repo, caller) do
-    total_entries =
+  defp total_count(query, repo, caller) do
+    total_count =
       query
       |> exclude(:preload)
       |> exclude(:order_by)
@@ -46,7 +46,7 @@ defimpl Scrivener.Paginater, for: Ecto.Query do
       |> count
       |> repo.one(caller: caller)
 
-    total_entries || 0
+    total_count || 0
   end
 
   defp prepare_select(
@@ -79,7 +79,7 @@ defimpl Scrivener.Paginater, for: Ecto.Query do
 
   defp total_pages(0, _), do: 1
 
-  defp total_pages(total_entries, page_size) do
-    (total_entries / page_size) |> Float.ceil() |> round
+  defp total_pages(total_count, page_size) do
+    (total_count / page_size) |> Float.ceil() |> round
   end
 end

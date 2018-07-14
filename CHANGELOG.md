@@ -6,11 +6,11 @@
 
 ## 1.3.0
 
-* Allow directly specifying `total_entries`
+* Allow directly specifying `total_count`
 
 ## 1.2.3
 
-* Handle complex group by statements in `total_entries`
+* Handle complex group by statements in `total_count`
 
 ## 1.2.2
 
@@ -34,7 +34,7 @@
 
 ## 1.1.2
 
-* Use `subquery` to calculate `total_entries`
+* Use `subquery` to calculate `total_count`
 
 ## 1.1.1
 

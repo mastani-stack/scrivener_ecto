@@ -48,7 +48,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
 
       assert page.page_size == 5
       assert page.page_number == 1
-      assert page.total_entries == 7
+      assert page.total_count == 7
       assert page.total_pages == 2
     end
 
@@ -57,7 +57,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
 
       assert page.page_size == 5
       assert page.page_number == 1
-      assert page.total_entries == 0
+      assert page.total_count == 0
       assert page.total_pages == 1
     end
 
@@ -72,7 +72,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
       assert page.page_size == 5
       assert page.page_number == 1
       assert page.entries == Enum.take(posts, 5)
-      assert page.total_entries == 6
+      assert page.total_count == 6
       assert page.total_pages == 2
     end
 
@@ -100,7 +100,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> select([p], sum(p.id))
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 7
+      assert page.total_count == 7
     end
 
     test "it handles complex order_by" do
@@ -112,7 +112,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> order_by([p], fragment("aliased_title"))
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 7
+      assert page.total_count == 7
     end
 
     test "can be provided the current page and page size as a params map" do
@@ -157,7 +157,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
 
       assert page.page_size == 5
       assert page.page_number == 1
-      assert page.total_entries == 7
+      assert page.total_count == 7
       assert page.total_pages == 2
     end
 
@@ -176,7 +176,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
 
       assert page.page_size == 5
       assert page.page_number == 1
-      assert page.total_entries == 7
+      assert page.total_count == 7
       assert page.total_pages == 2
     end
 
@@ -191,14 +191,14 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
       assert page.page_size == 10
     end
 
-    test "will respect the total_entries configuration" do
+    test "will respect the total_count configuration" do
       create_posts()
 
       config = %Scrivener.Config{
         module: Scrivener.Ecto.Repo,
         page_number: 2,
         page_size: 4,
-        options: [total_entries: 130]
+        options: [total_count: 130]
       }
 
       page =
@@ -206,18 +206,18 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> Post.published()
         |> Scrivener.paginate(config)
 
-      assert page.total_entries == 130
+      assert page.total_count == 130
     end
 
-    test "will respect total_entries passed to paginate" do
+    test "will respect total_count passed to paginate" do
       create_posts()
 
       page =
         Post
         |> Post.published()
-        |> Scrivener.Ecto.Repo.paginate(options: [total_entries: 130])
+        |> Scrivener.Ecto.Repo.paginate(options: [total_count: 130])
 
-      assert page.total_entries == 130
+      assert page.total_count == 130
     end
 
     test "will use total_pages if page_numer is too large" do
@@ -247,7 +247,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> KeyValue.zero()
         |> Scrivener.Ecto.Repo.paginate(page_size: 2)
 
-      assert page.total_entries == 5
+      assert page.total_count == 5
       assert page.total_pages == 3
     end
 
@@ -260,7 +260,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> group_by([p], p.id)
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 7
+      assert page.total_count == 7
     end
 
     test "can be used with a group by clause on field other than id" do
@@ -272,7 +272,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> select([p], p.body)
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 7
+      assert page.total_count == 7
     end
 
     test "can be used with a group by clause on field on joined table" do
@@ -285,7 +285,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> select([p, c], {c.body, count("*")})
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 2
+      assert page.total_count == 2
     end
 
     test "can be used with compound group by clause" do
@@ -298,7 +298,7 @@ defmodule Scrivener.Paginator.Ecto.QueryTest do
         |> select([p, c], {c.body, p.title, count("*")})
         |> Scrivener.Ecto.Repo.paginate()
 
-      assert page.total_entries == 2
+      assert page.total_count == 2
     end
 
     test "can be provided a Scrivener.Config directly" do
