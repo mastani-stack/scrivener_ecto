@@ -4,7 +4,7 @@ defmodule Scrivener.Ecto.Mixfile do
   def project do
     [
       app: :scrivener_ecto,
-      version: "1.3.0",
+      version: "2.1.0-dev",
       elixir: "~> 1.3",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
@@ -36,17 +36,18 @@ defmodule Scrivener.Ecto.Mixfile do
     ]
   end
 
-  defp applications(:test), do: [:scrivener, :postgrex, :ecto, :logger]
+  defp applications(:test), do: [:scrivener, :postgrex, :ecto, :logger, :telemetry]
   defp applications(_), do: [:scrivener, :logger]
 
   defp deps do
     [
-      {:scrivener, git: "https://github.com/mastani-stack/scrivener", override: true},
-      {:ecto, "~> 2.0"},
+      {:scrivener, "~> 2.4"},
+      {:ecto, "~> 3.0"},
+      {:ecto_sql, "~> 3.0", only: :test},
       {:dialyxir, "~> 0.5.0", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev},
-      {:ex_doc, "~> 0.18.0", only: :dev},
-      {:postgrex, "~> 0.11.0 or ~> 0.12.0 or ~> 0.13.0", optional: true}
+      {:ex_doc, "~> 0.19.0", only: :dev},
+      {:postgrex, "~> 0.14.0", only: :test}
     ]
   end
 
